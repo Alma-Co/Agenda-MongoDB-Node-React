@@ -13,21 +13,7 @@ function AgendaList({myAgenda, dispatch}) {
     const [newCity, setNewCity] = useState('')
     const [newCountry, setNewCountry] = useState('')
     const [newCode, setNewCode] = useState('')
-    const newUser =
-        {
-            name: newName,
-            age: newAge, 
-            address: {
-                street: newStreet,
-                number: newNumber,
-                city: newCity,
-                country: {
-                    code: newCode,
-                    country: newCountry
-                }
-            }
 
-        }
         
     useEffect(() => {
         if(!myAgenda?.length) {
@@ -37,6 +23,15 @@ function AgendaList({myAgenda, dispatch}) {
     
     return (
     <>
+    <button type="button" onClick={() => {dispatch(enterUserInAgendaList({
+            newName,
+            newAge,
+            newStreet,
+            newNumber,
+            newCity,
+            newCode,
+            'country-name': newCountry}))
+        }}>Add</button>
         <h1>My Agenda</h1>
         {myAgenda && myAgenda
         .map((user, index) => {
@@ -88,7 +83,7 @@ function AgendaList({myAgenda, dispatch}) {
         placeholder="Enter a new code"
         />
 
-        <button type="button" onClick={ () => dispatch(enterUserInAgendaList(newUser))}>Add</button>
+        
     </>
 )}
 

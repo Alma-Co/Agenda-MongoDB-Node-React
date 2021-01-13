@@ -1,9 +1,9 @@
 const { Router } = require('express');
 const usersController = require('../controllers/usersController');
 
-function usersRouter(Users) {
+function usersRouter(usersSchema, addressesSchema, countriesSchema) {
   const router = Router();
-  const agenda = usersController(Users);
+  const agenda = usersController(usersSchema, addressesSchema, countriesSchema);
 
   router.route('/')
     .get(agenda.getMethod)

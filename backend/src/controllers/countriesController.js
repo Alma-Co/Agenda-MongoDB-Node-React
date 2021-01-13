@@ -1,7 +1,7 @@
-function countriesController(Countries) {
+function countriesController(countriesSchema) {
   function getMethod(req, res) {
     const query = {};
-    Countries.find(query, (errorFindCountries, findCountries) => {
+    countriesSchema.find(query, (errorFindCountries, findCountries) => {
       if (errorFindCountries) {
         return res.send(errorFindCountries);
       }
@@ -10,13 +10,9 @@ function countriesController(Countries) {
   }
 
   function putMethod(req, res) {
-    const query = req.body;
-    Countries.create(query, (errorFindCountries, findCountries) => {
-      if (errorFindCountries) {
-        return res.send(errorFindCountries);
-      }
-      return res.json(findCountries);
-    });
+    const countryToCreate = req.body;
+    const postCallback = (error, created) => (error ? res.send(error) : res.send(created));
+    countriesSchema.create(countryToCreate, postCallback);
   }
 
   return { getMethod, putMethod };

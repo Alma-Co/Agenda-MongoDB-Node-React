@@ -1,12 +1,11 @@
-const countriesModel = require('../models/countriesModel');
+const countriesModel = require('../models/countriesSchema.js');
 
-function adressesController(Adresses) {
+function adressesController(addressesSchema) {
   function getMethod(req, res) {
     const query = {};
-    Adresses.find(query)
+    addressesSchema.find(query)
       .populate({
-        path: 'country',
-        model: countriesModel,
+        path: 'country'
       })
       .exec((errorFindAdresses, findAdresses) => {
         if (errorFindAdresses) {
@@ -16,19 +15,11 @@ function adressesController(Adresses) {
       });
   }
 
+
   function putMethod(req, res) {
-    const query = req.body;
-    Adresses.create(query)
-      .populate({
-        path: 'country',
-        model: countriesModel,
-      })
-      .exec((errorFindAdresses, findAdresses) => {
-        if (errorFindAdresses) {
-          return res.send(errorFindAdresses);
-        }
-        return res.json(findAdresses);
-      });
+    const addressToCreate = req.body;
+    const postCallback = (error, created) => (error ? res.send(error) : res.send(created));
+    addressesSchema.create(addressToCreate, postCallback);
   }
 
   return { getMethod, putMethod };

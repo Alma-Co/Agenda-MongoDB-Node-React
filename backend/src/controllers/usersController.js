@@ -1,16 +1,15 @@
-const addressesModel = require('../models/adressesModel');
-const countriesModel = require('../models/countriesModel');
+const addressesSchema = require('../models/adressesSchema');
+const countriesSchema = require('../models/countriesSchema.js');
+const usersSchema = require('../models/usersSchema.js');
 
-function usersController(Users) {
+function usersController(usersSchema, adressesSchema, countriesSchema) {
   function getMethod(req, res) {
     const query = {};
-    Users.find(query)
+    usersSchema.find(query)
       .populate({
         path: 'address',
-        model: addressesModel,
         populate: {
           path: 'country',
-          model: countriesModel,
         },
       })
       .exec((errorFindPersons, findPersons) => {
@@ -21,23 +20,32 @@ function usersController(Users) {
       });
   }
 
-  function putMethod(req, res) {
-    const query = req.body;
-    Users.create(query)
-      .populate({
-        path: 'address',
-        model: addressesModel,
-        populate: {
-          path: 'country',
-          model: countriesModel,
-        },
-      })
-      .exec((errorFindPersons, findPersons) => {
-        if (errorFindPersons) {
-          return res.send(errorFindPersons);
-        }
-        return res.json(findPersons);
-      });
+  function putMethod(req) {
+    const { info } = req.body;
+    debugger;
+    const userInfo = {
+      name: info.newName,
+      age: info.newAge
+    };
+    const addressInfo = {
+      street: info.newAddress,
+      number: info.newNumber,
+      city: info.newCity
+    };
+    const countryInfo = {
+      code: info.newCode,
+      name: info['country-name'],
+    };
+    const addressCallback = (errorAddress, newAddress) => {
+      userInfo.address = newAddress._id;
+      usersSchema.create(userInfo);
+    };
+    const countryCallback = (errorCountry, newCountry) => {
+      addressInfo.country = newCountry._id;
+      adressesSchema.create(addressInfo, addressCallback);
+    };
+
+    countriesSchema.create(countryInfo, countryCallback);
   }
 
   return { getMethod, putMethod };

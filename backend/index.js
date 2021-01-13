@@ -4,20 +4,21 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const debug = require('debug')('app');
 const chalk = require('chalk');
-const { connect } = require('mongoose');
-const Users = require('./src/models/usersModel');
-const Adresses = require('./src/models/adressesModel');
-const Countries = require('./src/models/countriesModel');
-const usersRouter = require('./src/routes/usersRouter')(Users);
-const adressesRouter = require('./src/routes/adressesRouter')(Adresses);
-const countriesRouter = require('./src/routes/countriesRouter')(Countries);
+const mongoose= require('mongoose');
+const usersSchema = require('./src/models/usersSchema');
+const adressesSchema = require('./src/models/adressesSchema');
+const countriesSchema = require('./src/models/countriesSchema.js');
+const usersRouter = require('./src/routes/usersRouter')(usersSchema, adressesSchema, countriesSchema);
+const adressesRouter = require('./src/routes/adressesRouter')(adressesSchema);
+const countriesRouter = require('./src/routes/countriesRouter')(countriesSchema);
 
 const app = express();
 
 app.use(cors());
 const port = process.env.PORT || 5000;
+const URLdb = process.env.DB || 'mongodb://localhost/agendaDB';
 
-connect('mongodb://localhost/agendaDB', { useNewUrlParser: true }, { useUnifiedTopology: true });
+mongoose.connect(URLdb, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false });
 
 app.use(morgan('tiny'));
 

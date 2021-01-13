@@ -1,7 +1,7 @@
-const ListUser = require('../models/usersModel');
+const ListUser = require('../models/usersSchema');
 const usersController = require('./usersController')(ListUser);
 
-jest.mock('../models/usersModel');
+jest.mock('../models/usersSchema');
 describe('usersController', () => {
   test('should call response json on getMethod', () => {
     const res = {

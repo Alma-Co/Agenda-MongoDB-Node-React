@@ -1,10 +1,17 @@
 import axios from 'axios';
 import actionTypes from './action-types';
 
-function addUserSuccess(userInfo) {
+function addUserSuccess(createdUser) {
     return {
-    type: actionTypes.LOAD_USER,
-    userInfo
+    type: actionTypes.CREATE_USER,
+    createdUser
+    }
+}
+
+function addUserError(errorUser) {
+    return {
+    type: actionTypes.ERROR_CREATE_USER,
+    errorUser
     }
 }
 
@@ -39,10 +46,10 @@ export function enterUserInAgendaList(infoContact) {
     return async(dispatch) => {
     const endpointItem = `http://localhost:5000/users/`;
         try {
-            const addUser = await axios.put(endpointItem, infoContact);
-            dispatch(addUserSuccess(addUser.data))
+            const {data} = await axios.put(endpointItem, infoContact);
+            dispatch(addUserSuccess(data));
         } catch(error) {
-            dispatch(error)
+            dispatch(addUserError(error))
         } 
     }
 }
